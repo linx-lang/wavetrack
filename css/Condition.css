@@ -32,34 +32,10 @@ footer {
 }
 
 
-.container {
-    display: flex;
-    justify-content: space-between; /* pousse un bloc à gauche et l'autre à droite */
-    width: 100%;
-}
-
-.option {
-    width: 40%;   /* largeur modifiable */
-    border: solid black;
+.condition {
+    border-style: solid;
+    min-height: 200px;
     padding: 20px;
-}
-
-.choixsalle {
-    width: 40%;   /* largeur modifiable */
-    padding: 20px;
-}
-
-input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  accent-color: green;
-}
-
-select {
-  padding: 5px 10px;
-  border: 2px solid black;
-  border-radius: 5px;
-  font-size: 16px;
 }
 
 .bouttondroite{ 
@@ -70,7 +46,7 @@ select {
 
 .contactfooter {
   text-decoration: underline;
-  color: rgb(0, 0, 8);
+  color: rgb(0, 0, 2);
   cursor: pointer;
   margin-left: 10px;
 }

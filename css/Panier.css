@@ -1,0 +1,96 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    padding: 20px;
+    text-align: center;
+}
+
+main {
+    margin: 20px 0;
+}
+
+.boutton {
+    color: black;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.bouttondroite{ 
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 20px;
+}
+
+
+footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    background-color: rgb(168, 168, 244);
+    width: 100%;
+    padding: 20px 0; 
+    margin-bottom: 0;
+}
+
+
+.contactfooter {
+  text-decoration: underline;
+  color: rgb(0, 0, 6);
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap; /* Pour la compatibilité mobile */
+}
+
+/* Style commun des 3 blocs */
+.card {
+    border: 2px solid black;
+    width: 300px;
+    min-height: 400px;
+    padding: 15px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+h2 {
+    font-size: 1.2rem;
+    margin-top: 0;
+    font-weight: normal;
+}
+
+.content {
+    flex-grow: 1; /* Remplit l'espace vide */
+}
+
+.btn-small {
+    padding: 2px 10px;
+}
+
+.invoice-item {
+    border-top: 2px dashed black;
+    border-bottom: 2px dashed black;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.invoice-info p {
+    margin: 2px 0;
+    font-size: 0.85rem;
+}
+

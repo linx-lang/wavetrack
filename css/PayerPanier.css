@@ -38,14 +38,9 @@ footer {
     width: 100%;
 }
 
-.option {
+.Paiement {
     width: 40%;   /* largeur modifiable */
     border: solid black;
-    padding: 20px;
-}
-
-.choixsalle {
-    width: 40%;   /* largeur modifiable */
     padding: 20px;
 }
 
@@ -55,11 +50,40 @@ input[type="checkbox"] {
   accent-color: green;
 }
 
-select {
-  padding: 5px 10px;
-  border: 2px solid black;
-  border-radius: 5px;
-  font-size: 16px;
+.commande { 
+    height: 320px;
+    border: 2px solid black;
+    position: relative;
+    width: 50%;
+    padding: 20px;
+}
+
+.produit {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.total {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-top: 2px solid black;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.info input {
+    width: 220px;
+    padding: 8px;
+    margin: 20px 0;
+    border: 2px solid black;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .bouttondroite{ 
@@ -70,7 +94,7 @@ select {
 
 .contactfooter {
   text-decoration: underline;
-  color: rgb(0, 0, 8);
+  color: rgb(1, 1, 11);
   cursor: pointer;
   margin-left: 10px;
 }

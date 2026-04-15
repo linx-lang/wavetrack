@@ -31,7 +31,6 @@ footer {
     margin-bottom: 0;
 }
 
-
 .container {
     display: flex;
     justify-content: space-between; /* pousse un bloc à gauche et l'autre à droite */
@@ -68,9 +67,10 @@ select {
     padding-right: 20px;
 }
 
+
 .contactfooter {
   text-decoration: underline;
-  color: rgb(0, 0, 8);
+  color: rgb(0, 0, 3);
   cursor: pointer;
   margin-left: 10px;
 }
