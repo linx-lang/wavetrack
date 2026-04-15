@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WaveTrack</title>
+    <link rel="stylesheet" href="css/Inscription.css">
+    <link rel="stylesheet" href="css/header.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="img/rasp.png" alt="Logo" class="logo-img">
+            <span class="nomSite">WaveTrack</span>
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="#">Accueil</a></li>
+            <li><a href="#">Produits</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">À propos??</a></li>
+            <li><img src="img/user.png" alt="Profile" class="user-img"></li>
+        </ul>
+    </nav>
+
+     <header>
+        <h1>WaveTrack</h1>
+        <h2>Inscription</h2>
+    </header>
+
+    <main>
+    
+        <div class = "container">
+            <div class = "formuperso">
+                <div class = "info">
+                    <input type="text" placeholder="Nom" name="nomPro">
+                    <input type="text" placeholder="Prenom" name="prenomPro">
+                    <input type="email" placeholder="Mail" name="emailPro">
+                    <input type="password" placeholder="MDP" name="mdpPro">
+                </div>
+                <label class="checkbox-container">
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                    Etes vous bien propriétaires
+                </label>
+                <br>
+                <label class="checkbox-container">
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                    Accepter les conditions d'utilisation.
+                </label>
+
+                <a href="condition.html" class="conditions">Lire les conditions</a>
+                <br>
+                <br>
+                <button class = "boutton" onclick="window.location.href='Abonnement.html'">Abonnement</button>
+            </div>
+
+            <div class = "formusalle">
+                <div class = "info">
+                    <input type="text" placeholder="Nom de la salle" name="nomSalle">
+                    <input type="text" placeholder="Capacité" name="capaciteSalle">
+                    <input type="text" placeholder="Code Postal" name="codePosSalle">
+                    <input type="text" placeholder="Adresse" name="adresseSalle">
+                    <textarea class="longtxt" placeholder="Autre" name="autreSalle"></textarea>
+                    <textarea class="longtxt" placeholder="Veuillez préciser vos périodes de fermetures" name="periodeFermetureSalle"></textarea>
+                </div>
+
+                <p>Horaires de la semaine:</p>
+                
+                <div class="jour-ligne">
+                    <input type="checkbox" id="lundi">
+                    <label for="lundi">Lundi</label>
+                    <div class = "info">
+                        <input type="text" placeholder="Horaires">
+                    </div>
+                </div>
+
+                <div class="jour-ligne">
+                    <input type="checkbox" id="mardi">
+                    <label for="mardi">Mardi</label>
+                    <div class = "info">
+                        <input type="text" placeholder="Horaires">
+                    </div>
+                </div>
+
+                <div class="jour-ligne">
+                    <input type="checkbox" id="mercredi">
+                    <label for="mercredi">Mercredi</label>
+                    <div class = "info">
+                        <input type="text" placeholder="Horaires">
+                    </div>
+                </div>
+                <div class="jour-ligne">
+                    <input type="checkbox" id="jeudi">
+                    <label for="jeudi">Jeudi</label>
+                    <div class = "info">
+                        <input type="text" placeholder="Horaires">
+                    </div>
+                </div>
+
+                <div class="jour-ligne">
+                    <input type="checkbox" id="vendredi">
+                    <label for="vendredi">Vendredi</label>
+                    <div class = "info">
+                        <input type="text" placeholder="Horaires">
+                    </div>
+                </div>
+
+                <div class="jour-ligne">
+                    <input type="checkbox" id="samedi">
+                    <label for="samedi">Samedi</label>
+                    <div class = "info">
+                        <input type="text" placeholder="Horaires">
+                    </div>
+                </div>
+                <div class="jour-ligne">
+                    <input type="checkbox" id="dimanche">
+                    <label for="dimanche">Dimanche</label>
+                    <div class = "info">
+                        <input type="text" placeholder="Horaires">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <div class = "bouttondroite">
+            <button class = "boutton" onclick="window.location.href='PaiementInscription.html'">Valider</button>
+        </div>
+    
+    </main>
+
+    <footer>
+        <p>Kozlov-mercier Nina - Issa Lina - Akbaba Julia - Doumergue Louise - Girard Alexia - 
+                <a href="Contactavant.html" class="contactfooter">Nos Contacts</a></p>
+    </footer>
+</body>
+</html>
