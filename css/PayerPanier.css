@@ -1,0 +1,100 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    padding: 20px;
+    text-align: center;
+}
+
+main {
+    margin: 20px 0;
+}
+
+.boutton {
+    color: black;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    background-color: rgb(168, 168, 244);
+    width: 100%;
+    padding: 20px 0; 
+    margin-bottom: 0;
+}
+
+
+.container {
+    display: flex;
+    justify-content: space-between; /* pousse un bloc à gauche et l'autre à droite */
+    width: 100%;
+}
+
+.Paiement {
+    width: 40%;   /* largeur modifiable */
+    border: solid black;
+    padding: 20px;
+}
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: green;
+}
+
+.commande { 
+    height: 320px;
+    border: 2px solid black;
+    position: relative;
+    width: 50%;
+    padding: 20px;
+}
+
+.produit {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.total {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-top: 2px solid black;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.info input {
+    width: 220px;
+    padding: 8px;
+    margin: 20px 0;
+    border: 2px solid black;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bouttondroite{ 
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 20px;
+}
+
+.contactfooter {
+  text-decoration: underline;
+  color: rgb(1, 1, 11);
+  cursor: pointer;
+  margin-left: 10px;
+}

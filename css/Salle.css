@@ -1,0 +1,129 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    margin: 0;
+}
+
+.conteneur {
+    display: flex;
+    width: 100%;
+    flex: 1;
+}
+
+.colonne-gauche {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu {
+    width: 100%;
+    background-color: white;
+}
+
+.onglet {
+    display: block;
+    text-align: center;
+    padding: 15px 0;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
+    border: 1px solid black;
+    margin-bottom: 0px;
+}
+
+.sousmenu {
+    background-color: #f0f0f0;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+    border-bottom: 1px solid black;
+    flex: 1;
+}
+
+.sous-onglet {
+    display: block;
+    padding: 15px;
+    border-bottom: 1px solid black;
+    text-decoration: none;
+    color: black;
+}
+
+.sous-onglet:hover {
+    background-color: #dcdcdc;
+}
+
+.infos {
+    flex: 1;
+    min-width: 0;
+    padding: 20px;
+    margin-top: 3%;
+}
+
+.boutton {
+    color: black;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.bouttondroite{ 
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 20px;
+}
+
+.contactfooter {
+  text-decoration: underline;
+  color: rgb(0, 0, 2);
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+/* Partie Informations, avec les images*/
+.carousel-wrapper {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.horizontal-scroll {
+    display: flex;
+    gap: 20px;
+    height: 200px;
+    animation: scroll 20s linear infinite;
+    will-change: transform;
+}
+
+.horizontal-scroll-item {
+    min-width: 250px;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+}
+
+@keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+.item-1 { background-image: url("../img/imgSalle-1.png"); }
+.item-2 { background-image: url("../img/imgSalle-2.png"); }
+.item-3 { background-image: url("../img/imgSalle-3.png"); }
+.item-4 { background-image: url("../img/imgSalle-4.png"); }
+.item-5 { background-image: url("../img/imgSalle-5.png"); }
+
+footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    background-color: rgb(168, 168, 244);
+    width: 100%;
+    padding: 20px 0; 
+    margin-bottom: 0;
+}

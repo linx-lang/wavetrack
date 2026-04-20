@@ -1,0 +1,52 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    padding: 20px;
+    text-align: center;
+}
+
+main {
+    margin: 20px 0;
+}
+
+.boutton {
+    color: black;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.bouttondroite{ 
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 20px;
+}
+
+
+footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    background-color: rgb(168, 168, 244);
+    width: 100%;
+    padding: 20px 0; 
+    margin-bottom: 0;
+}
+
+.contactfooter {
+  text-decoration: underline;
+  color: rgb(0, 0, 6);
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.Facture {
+    border-style: solid;
+    min-height: 200px;
+    padding: 20px;
+}
