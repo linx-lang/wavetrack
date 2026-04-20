@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WaveTrack</title>
+    <link rel="stylesheet" href="css/AjoutCreneaux.css">
+    <link rel="stylesheet" href="css/header.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="img/rasp.png" alt="Logo" class="logo-img">
+            <span class="nomSite">WaveTrack</span>
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="#">Accueil</a></li>
+            <li><a href="#">Produits</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">À propos??</a></li>
+            <li><img src="img/user.png" alt="Profile" class="user-img"></li>
+        </ul>
+    </nav>
+    
+    <header>
+        <h1>WaveTrack</h1>
+        <h2>Ajout créneau</h2>
+    </header>
+
+    <main>
+        <div class = "container">
+
+            <div class = "InfoArtistes">
+                <div class = "info">
+                    <p>Information sur l'artiste :</p>
+                    <input type="text" placeholder="Nom du groupe" name ="nomGroupeAjoutCreneaux">
+                    <input type="text" placeholder="1ere partie" name ="premierePartAjoutCreneaux">
+                    <input type="text" placeholder="2eme partie" name ="deuxiemePartAjoutCreneaux">
+                    <input type="text" placeholder="Information supplémentaire ?" name="infoSuppAjoutCreneaux">
+                </div>
+
+            </div>
+
+            <div class="Creneau">
+                <p>Quand a lieu la prestation ?</p>
+                <input type="date" placeholder="jj/mm/aaaa">
+                <p>A quel heure à lieu la prestation ?</p>
+                <input type="time" placeholder="--h--min">
+                <p>Combien de temps dure la prestation ?</p>
+                <input type="time" placeholder="--h">
+            </div>
+
+        </div>
+
+        <div class = "bouttondroite">
+            <button class = "boutton" onclick="window.location.href='Salle.html'">Valider</button>
+        </div>
+
+
+    </main>
+
+    <footer>
+        <p>Kozlov-mercier Nina - Issa Lina - Akbaba Julia - Doumergue Louise - Girard Alexia - 
+                <a href="Contactapres.html" class="contactfooter">Nos Contacts</a></p>
+    </footer>
+
+</body>
+</html>
