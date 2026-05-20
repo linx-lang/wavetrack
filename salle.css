@@ -56,14 +56,12 @@ main {
 }
 
 /* Contenu principal */
-
 .infos {
     flex: 1;
     padding: 20px 30px;
 }
 
 /* Header salle */
-
 .header-salle {
     display: flex;
     justify-content: space-between;
@@ -102,7 +100,6 @@ main {
 }
 
 /* Onglets */
-
 .tabs {
     display: flex;
     gap: 10px;
@@ -128,7 +125,6 @@ main {
 }
 
 /* Contenu onglets */
-
 .tab-content {
     display: none;
 }
@@ -138,7 +134,6 @@ main {
 }
 
 /* Cards Analyse */
-
 .cards {
     display: flex;
     gap: 20px;
@@ -178,12 +173,20 @@ main {
 }
 
 /* Planning */
-
 .planning-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.planning-nav {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .boutton {
@@ -194,35 +197,57 @@ main {
     border-radius: 6px;
     border: none;
     font-size: 14px;
+    text-decoration: none;
 }
 
 .boutton:hover {
     background: #1d4ed8;
 }
 
-.planning-table {
+.timetable-container {
+    background: #ffffff;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+#timetable {
     width: 100%;
     border-collapse: collapse;
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+    font-size: 0.9rem;
 }
 
-.planning-table th,
-.planning-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #e5e7eb;
-    font-size: 14px;
+#timetable th,
+#timetable td {
+    border: 1px solid #e0e0e0;
+    padding: 6px;
+    text-align: center;
+    vertical-align: top;
 }
 
-.planning-table th {
-    background: #f9fafb;
-    text-align: left;
+.time-col {
+    background: #f3f3f3;
+    font-weight: bold;
+    width: 90px;
 }
+
+.slot {
+    background: #0dcaf0;
+    color: #fff;
+    padding: 4px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    font-size: 0.8rem;
+}
+
+.boutonCreneau {
+    border : solid 1px black;
+    margin-bottom : 3%;
+    
+}
+
 
 /* Alertes */
-
 .liste-alertes {
     list-style: none;
     padding: 0;
@@ -287,47 +312,7 @@ main {
     background: #ecfdf5;
 }
 
-/* Footer */
-
-footer {
-    margin-top: 0;
-    text-align: center;
-    font-size: 14px;
-    background-color: rgb(168, 168, 244);
-    width: 100%;
-    padding: 12px 0;
-}
-
-.contactfooter {
-    text-decoration: underline;
-    color: #111827;
-    margin-left: 10px;
-}
-
-/* Responsive */
-
-@media (max-width: 900px) {
-    .conteneur {
-        flex-direction: column;
-    }
-
-    .colonne-gauche {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #d0d7e2;
-    }
-
-    .infos {
-        padding: 15px;
-    }
-
-    .cards {
-        flex-direction: column;
-    }
-}
-
-
-/*___________________*/
+/* Slider (ton code existant) */
 .slider {
     width: 100%;
     max-width: 400px;
@@ -358,7 +343,6 @@ footer {
     transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-/* Affichage des slides selon input */
 #s1:checked ~ .slides .slide:nth-child(1),
 #s2:checked ~ .slides .slide:nth-child(2),
 #s3:checked ~ .slides .slide:nth-child(3),
@@ -368,7 +352,6 @@ footer {
     transform: scale(1);
 }
 
-/* Miniatures */
 .thumbnails {
     display: flex;
     justify-content: center;
@@ -392,7 +375,6 @@ footer {
     transform: scale(1.05);
 }
 
-/* Miniature active */
 #s1:checked ~ .thumbnails label:nth-child(1),
 #s2:checked ~ .thumbnails label:nth-child(2),
 #s3:checked ~ .thumbnails label:nth-child(3),
@@ -402,3 +384,39 @@ footer {
     border: 2px solid #2563eb;
 }
 
+/* Footer */
+footer {
+    margin-top: 0;
+    text-align: center;
+    font-size: 14px;
+    background-color: rgb(168, 168, 244);
+    width: 100%;
+    padding: 12px 0;
+}
+
+.contactfooter {
+    text-decoration: underline;
+    color: #111827;
+    margin-left: 10px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .conteneur {
+        flex-direction: column;
+    }
+
+    .colonne-gauche {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #d0d7e2;
+    }
+
+    .infos {
+        padding: 15px;
+    }
+
+    .cards {
+        flex-direction: column;
+    }
+}
