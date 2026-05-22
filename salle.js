@@ -19,7 +19,7 @@ fetch("php/temperatures.php")
     });
 
 // --- Graphe alertes par machine ---
-fetch("php/alerte_par_machine.php")
+fetch("php/alerte.php")
     .then(res => res.json())
     .then(data => {
         new Chart(document.getElementById("alerte"), {
@@ -38,7 +38,7 @@ fetch("php/alerte_par_machine.php")
     });
 
 // --- Graphe alertes par jour ---
-fetch("php/alerte_par_jour.php?idM=" + idM)
+fetch("php/alerte_jour.php")
     .then(res => res.json())
     .then(data => {
         new Chart(document.getElementById("alerteJour"), {

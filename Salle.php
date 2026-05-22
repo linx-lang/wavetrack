@@ -124,21 +124,21 @@ $alertes = [
                     <button class="tab-btn" data-tab="alertes">Alertes</button>
                 </div>
 
-                <!-- Contenu Analyse -->
-                <div class="tab-content active" id="tab-analyse">
-                    <div class="cards">
-                        <div class="card">
+               <div class="tab-content active" id="tab-analyse">
+                <div class="cards">
+                    <div class="card">
                             <h3>Température</h3>
                             <p><strong>Actuelle :</strong> <?= $temperatureActuelle ?> °C</p>
                             <p><strong>Moyenne du jour :</strong> <?= $temperatureMoyenneJour ?> °C</p>
                             <canvas id="monGraphe"></canvas>
                         </div>
-
+                          
                         <div class="card">
                             <h3>Portes</h3>
                             <p><strong>Ouvertures aujourd’hui :</strong> <?= $portesOuverturesJour ?></p>
                             <p><strong>État actuel :</strong> <?= $porteEtat ?></p>
                         </div>
+                        
 
                         <div class="card">
                             <h3>Autres capteurs</h3>
@@ -147,10 +147,9 @@ $alertes = [
                             <canvas id="alerte"></canvas>
                             <!-- Graphe alertes par jour -->
                             <canvas id="alerteJour"></canvas>
-                        </div>
-
-                    </div>
+                          </div>
                 </div>
+            </div>
 
                 <!-- Contenu Planning -->
                 <div class="tab-content" id="tab-planning">
