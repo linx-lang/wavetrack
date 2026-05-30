@@ -1,3 +1,2 @@
 # wavetrack
-
-http://127.0.0.1/site_po/site/Site/Connexion.html
+<a href="profil.php"> <img src="img/user.png" class="user-img"> </a>
