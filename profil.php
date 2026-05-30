@@ -1,11 +1,13 @@
 <?php
 session_start();
 
-// ⚠️ Simulation d’un propriétaire connecté
-// Quand ton login marchera : $_SESSION['idPro']
-$idPro = 2;
+if (!isset($_SESSION['idPro'])) {
+    die("Aucun propriétaire connecté");
+}
 
-// Connexion BDD
+$idPro = (int) $_SESSION['idPro'];
+
+// 🔥 Connexion BDD — tu l'avais supprimée !
 $conn = mysqli_connect("localhost", "root", "", "projetsql");
 if (!$conn) {
     die("Erreur connexion : " . mysqli_connect_error());
@@ -14,13 +16,23 @@ if (!$conn) {
 // --- Récupération des infos du propriétaire ---
 $sqlPro = "SELECT * FROM proprietaire WHERE idPro = $idPro";
 $resPro = mysqli_query($conn, $sqlPro);
+
+if (!$resPro) {
+    die("Erreur SQL propriétaire : " . mysqli_error($conn));
+}
+
 $pro = mysqli_fetch_assoc($resPro);
 
 // --- Récupération des salles du propriétaire ---
 $sqlSalles = "SELECT * FROM salle WHERE idPro = $idPro";
 $resSalles = mysqli_query($conn, $sqlSalles);
 
+if (!$resSalles) {
+    die("Erreur SQL salles : " . mysqli_error($conn));
+}
 ?>
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -41,7 +53,12 @@ $resSalles = mysqli_query($conn, $sqlSalles);
         <li><a href="#">Produits</a></li>
         <li><a href="#">Contact</a></li>
         <li><a href="#">À propos</a></li>
-        <li><img src="img/user.png" class="user-img"></li>
+        <li>
+        <a href="profil.php" class="profil-link">
+            <img src="img/user.png" class="user-img">
+        </a>
+</li>
+
     </ul>
 </nav>
 
@@ -52,29 +69,26 @@ $resSalles = mysqli_query($conn, $sqlSalles);
         <aside class="colonne-gauche">
             <div class="menu">
                 <h1 class="onglet">Mes salles</h1>
+                
             </div>
 
             <div class="sousmenu">
-
+    
     <h2 class="titre-sousmenu">Mes salles</h2>
 
     <div class="liste-salles">
         <?php while ($s = mysqli_fetch_assoc($resSalles)): ?>
             <div class="carte-salle">
-                <h3><?= htmlspecialchars($s['nomSalle']) ?></h3>
-                <p><?= htmlspecialchars($s['adresseSalle']) ?></p>
+                <h3><?= htmlspecialchars($s['nomS']) ?></h3>
+                <p><?= htmlspecialchars($s['lieus']) ?></p>
 
                 <a href="salle.php?salle=<?= $s['idSalle'] ?>" class="btn-voir">
-                    Voir
+                    <a href="salle.php?salle=<?= $s['idSalle'] ?>" class="btn-voir">Voir</a>
+
                 </a>
             </div>
         <?php endwhile; ?>
-    </div>
-
-    <a href="ajouter_salle.php" class="btn-ajouter-salle">
-    <span class="plus">+</span> Ajouter une salle</a>
-
-</div>
+   
 
         </aside>
 
@@ -92,13 +106,19 @@ $resSalles = mysqli_query($conn, $sqlSalles);
             </div>
 
             <div class="cards">
-                <div class="card">
+                <div class="card card-profil">
+                <div class="infos-profil">
                     <h3>Informations personnelles</h3>
                     <p><strong>Nom :</strong> <?= $pro['nomP'] ?></p>
                     <p><strong>Prénom :</strong> <?= $pro['prenomP'] ?></p>
                     <p><strong>Email :</strong> <?= $pro['mailP'] ?></p>
                     <p><strong>Téléphone :</strong> <?= $pro['numP'] ?: "Non renseigné" ?></p>
                 </div>
+
+                <div class="photo-profil">
+                    <img src="img/user.png" alt="Photo de profil">
+                </div>
+</div>
 
                 <div class="card">
                     <h3>Abonnement</h3>
