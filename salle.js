@@ -56,6 +56,24 @@ fetch("php/alerte_jour.php")
         });
     });
 
+// --- Graphe Voltage ---
+fetch("php/voltage.php")
+    .then(res => res.json())
+    .then(data => {
+        new Chart(document.getElementById("voltage"), {
+            type: "line",
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: "Voltage (V)",
+                    data: data.values,
+                    borderColor: "purple",
+                    borderWidth: 2,
+                    fill: false
+                }]
+            }
+        });
+    });
 
 
 
