@@ -3,14 +3,15 @@ require('connectdb.php');
 require('db.php');
 function verifieProfil($connexion, $email, $mdp){
 
-    $query = "SELECT COUNT(*) FROM proprietaire WHERE mailP='".$email."' AND mdpP='".$mdp."'";
+    $query = "SELECT * FROM proprietaire WHERE mailP='".$email."' AND mdpP='".$mdp."'";
     $resultat = mysqli_query($connexion, $query);
-    $ligne = mysqli_fetch_row($resultat);
+    $pro = mysqli_fetch_assoc($resultat);
 
-    if($ligne[0] == 1){
+    if($pro){
         session_start();
-        $_SESSION['email'] = $email;
-        header("Location: ../Salle.html");
+        $_SESSION['idPro'] = $pro['idPro'];   // 🔥 OBLIGATOIRE
+        $_SESSION['email'] = $pro['mailP'];   // optionnel
+        header("Location: ../profil.php");    // 🔥 💀 tu dois aller au profil, pas salle.php
     } else {
         session_start();
         $_SESSION['message'] = 'Email ou mot de passe incorrect';
@@ -18,6 +19,7 @@ function verifieProfil($connexion, $email, $mdp){
     }
     exit();
 }
+
 
 $connexion = mysqli_connect(SERVEUR, NOM, PASSE, BD);
 if(!$connexion){
