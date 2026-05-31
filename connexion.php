@@ -9,9 +9,9 @@ function verifieProfil($connexion, $email, $mdp){
 
     if($pro){
         session_start();
-        $_SESSION['idPro'] = $pro['idPro'];   // 🔥 OBLIGATOIRE
-        $_SESSION['email'] = $pro['mailP'];   // optionnel
-        header("Location: ../profil.php");    // 🔥 💀 tu dois aller au profil, pas salle.php
+        $_SESSION['idPro'] = $pro['idPro'];   
+        $_SESSION['email'] = $pro['mailP'];  
+        header("Location: ../salle.php");   
     } else {
         session_start();
         $_SESSION['message'] = 'Email ou mot de passe incorrect';
