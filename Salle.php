@@ -1,210 +1,302 @@
+<?php require("php/connectdb.php"); ?>
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-session_start();
-
-// Connexion MySQL
-$conn = mysqli_connect("localhost", "root", "", "projetsql");
-if (!$conn) {
-    die("Erreur MySQL : " . mysqli_connect_error());
-}
-
-/* ----------------------
-   LOGIQUE PLANNING
------------------------ */
-
-function getMonday($date = null) {
-    if (!$date) $date = date("Y-m-d");
-    $ts = strtotime($date);
-    $dow = date('N', $ts); // 1 = lundi
-    return date("Y-m-d", strtotime("-" . ($dow - 1) . " days", $ts));
-}
-
-$monday = isset($_GET['monday']) ? $_GET['monday'] : getMonday();
-$sunday = date("Y-m-d", strtotime("$monday +6 days"));
-$prevMonday = date("Y-m-d", strtotime("$monday -7 days"));
-$nextMonday = date("Y-m-d", strtotime("$monday +7 days"));
-
-$errorMessage = "";
-
-/* ----------------------
-   TRAITEMENT FORMULAIRES
------------------------ */
-
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"])) {
-    $action = $_POST["action"];
-
-    if ($action === "add") {
-        $idArt = isset($_POST["idArt"]) ? (int)$_POST["idArt"] : 0;
-        $date = isset($_POST["date"]) ? $_POST["date"] : "";
-        $startHour = isset($_POST["startHour"]) ? (int)$_POST["startHour"] : -1;
-
-        if ($idArt <= 0 || $date === "" || $startHour < 0) {
-            $errorMessage = "Tous les champs sont obligatoires.";
-        } else {
-            $heureDeb = sprintf("%02d:00:00", $startHour);
-            $heureFin = sprintf("%02d:00:00", $startHour + 2);
-
-            // Vérifier chevauchement
-            $sqlCheck = "
-                SELECT * FROM creneaux
-                WHERE date = ?
-                  AND NOT (? <= heureDeb OR ? >= heureFin)
+    session_start();
+    if (!isset($_SESSION['idPro'])) {
+        header("Location: Connexion.html");
+        exit();
+    }    
+    function voirSalle($connexion, $id_salle) {
+        $query = "
+            SELECT nomS, lieus, capacite FROM salle WHERE idSalle = '$id_salle'
             ";
-            $stmt = mysqli_prepare($conn, $sqlCheck);
-            mysqli_stmt_bind_param($stmt, "sss", $date, $heureDeb, $heureFin);
-            mysqli_stmt_execute($stmt);
-            $resCheck = mysqli_stmt_get_result($stmt);
+        $result = mysqli_query($connexion, $query);
+        if (!$result) {
+            die("SQL Error: " . mysqli_error($connexion) . " - query: " . $query);
+        }
+        return mysqli_fetch_assoc($result);
+    }
 
-            if ($resCheck && mysqli_num_rows($resCheck) > 0) {
-                $errorMessage = "Chevauchement détecté avec un autre créneau.";
-            } else {
-                $sqlInsert = "INSERT INTO creneaux (heureDeb, heureFin, date, idArt)
-                              VALUES (?, ?, ?, ?)";
-                $stmt2 = mysqli_prepare($conn, $sqlInsert);
-                mysqli_stmt_bind_param($stmt2, "sssi", $heureDeb, $heureFin, $date, $idArt);
-                if (!mysqli_stmt_execute($stmt2)) {
-                    $errorMessage = "Erreur lors de l'ajout du créneau.";
+    $idPro = 7;
+    $id_salle = 4; 
+    $salle    = voirSalle($connexion, $id_salle);
+
+    // Date Planning
+
+    // Fonction pour obtenir le lundi de la semaine à partir d'une date
+    function getLundi($date = null) { // $date = null permet de rendre le paramètre optionnel
+        // Si aucune date n'est fournie, on prend la date actuelle
+        if (!$date) {
+            $date = date("Y-m-d"); 
+        }
+        $ts = strtotime($date); // Convertir la date en timestamp 
+        $jourDeLaSemaine = date('N', $ts); // 1 = lundi, 2 = mardi, etc.
+        return date("Y-m-d", strtotime("-" . ($jourDeLaSemaine - 1) . " days", $ts));
+    }
+
+    // Récupérer le lundi de la semaine à afficher (soit depuis l'URL, soit par défaut le lundi de la semaine actuelle)
+    $lundi = isset($_GET['lundi']) ? $_GET['lundi'] : getLundi();
+
+    // Si on est lundi et qu'aucune date n'est passé en paramètre, 
+    // on force l'affichage de la semaine actuelle
+    if (date("N") == 1 && !isset($_GET["lundi"])) {
+        $lundi = getLundi();
+    }
+
+    $dimanche = date("Y-m-d", strtotime("$lundi +6 days"));
+    $lundiAvant = date("Y-m-d", strtotime("$lundi -7 days"));
+    $lundiApres = date("Y-m-d", strtotime("$lundi +7 days"));
+
+    // Gestion des créneaux (ajout, modification, suppression)
+
+    if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"])) {
+        $action = $_POST["action"];
+
+        if ($action === "ajouter") {
+            // Récupération des données du formulaire
+            $nomArtiste = (string)$_POST["nomArtiste"]; 
+            $date = $_POST["date"];
+            $heureDebutCreneau = (int)$_POST["heureDebutCreneau"]; // 
+
+            $erreurCreneau = "";
+            $idArt = 0;
+
+            $aujourdhui = date("Y-m-d");
+            // Si la date choisie est antérieure (inférieure) à la date d'aujourd'hui
+            if ($date < $aujourdhui) {
+                $erreurCreneau = "Impossible de rajouter ou modifier un créneau sur une date déjà passée.";
+            }
+
+            if ($erreurCreneau === "") {
+
+                // Récupérer les horaires d'ouverture du jour
+
+                // Convertit la date choisie en un numéro de jour de la semaine (1=lundi, 2=mardi, etc.)
+                $jourSemaine = date("N", strtotime($date)); 
+                $sqlOuverture = "
+                        SELECT horaireDeb, horaireFin 
+                        FROM ouverture 
+                        WHERE idSalle = $id_salle AND idj = $jourSemaine
+                       ";
+                $resOuverture = mysqli_query($connexion, $sqlOuverture); 
+                $ouvertureSalle = mysqli_fetch_assoc($resOuverture);
+                
+                // Si la salle n'a pas d'horaire d'ouverture/ est fermée pour le jour choisi
+                if ($ouvertureSalle === false) {
+                    $erreurCreneau = "La salle {$salle['nomS']} est fermé ce jour-là. Il est donc impossible de rajouter un créneau.";
                 } else {
-                    header("Location: Salle.php?monday=" . urlencode($monday) . "#tab-planning");
-                    exit;
+
+                    // Convertit les heures d'ouverture et de fermeture en nombre entier
+                    $heureOuvSalle = (int)substr($ouvertureSalle["horaireDeb"], 0, 2);
+                    $heureFermSalle = (int)substr($ouvertureSalle["horaireFin"], 0, 2);
+                    if ($heureFermSalle === 0) {
+                        $heureFermSalle = 24;
+                    }
+                    
+                    if ($heureDebutCreneau < $heureOuvSalle || ($heureDebutCreneau + 2) > $heureFermSalle) {
+                        $erreurCreneau = "Il est impossible de rajouter un créneau en dehors des heures d'ouverture.";
+                    }
+
+                    // Vérifier si l'artiste choisit existe déjà
+                    $res = mysqli_query($connexion, "
+                        SELECT idArt
+                        FROM artiste
+                        WHERE nom='$nomArtiste'
+                    ");
+                    if (mysqli_num_rows($res) > 0) {
+                        // Si l'artiste existe, on reprend son idArt
+                        $row = mysqli_fetch_assoc($res);
+                        $idArt = (int)$row["idArt"];
+                    } else {
+                        // Sinon, on crée l'artiste dans la base de donnée
+                        mysqli_query($connexion, "
+                            INSERT INTO artiste (nom) VALUES ('$nomArtiste')
+                        ");
+                        $idArt = mysqli_insert_id($connexion);
+                    }
+                }
+                if ($erreurCreneau !== "") {
+                    // Si il y a une erreur, elle sera affiché avec l'alerte php'
+                } else {
+
+                    // Calcul des heures (Formatage pour la base de donnée)
+                    $heureDeb = sprintf("%02d:00:00", $heureDebutCreneau);
+                    $heureFin = sprintf("%02d:00:00", $heureDebutCreneau + 2);
+                    
+                    // Eviter le chevauchement de créneaux
+
+                    // On vérifie s'il existe déjà un créneau pour : 
+                            //la même salle, 
+                            //le même jour 
+                            // et qui chevauche les heures de début et fin du nouveau créneau
+                    $sqlChevauchement = "
+                        SELECT *
+                        FROM creneaux
+                        WHERE idSalle = $id_salle
+                        AND date = '$date'
+                        AND (heureDeb < '$heureFin')
+                        AND (heureFin > '$heureDeb')
+                    ";
+                    $resChevauchement = mysqli_query($connexion, $sqlChevauchement);
+                    
+                    // Si le créneau en chevauche un autre
+                    if (mysqli_num_rows($resChevauchement) > 0) {
+                        $erreurCreneau = "Impossible de choisir ce créneau car il chevauche un autre créneau déjà existant.";
+                        } else { 
+
+                        // Sinon, on ajoute le créneau dans la base de donnée
+                        mysqli_query($connexion, "
+                            INSERT INTO creneaux (heureDeb, heureFin, date, idArt, idSalle)
+                            VALUES ('$heureDeb', '$heureFin', '$date', '$idArt', '$id_salle')
+                        ");
+
+                        header("Location: Salle.php?lundi=" . urlencode($lundi));
+                        exit;
+                    }
+                }
+            }    
+        };
+
+        if ($action === "modifier") {
+            // Récupération des données du créneau à modifier
+            $idC = (int)$_POST["idC"];
+            $nomArtiste = (string)$_POST["nomArtiste"];
+            $date = $_POST["date"];
+            $heureDebutCreneau = (int)$_POST["heureDebutCreneau"];
+
+            $erreurCreneau = "";
+            $idArt = 0;
+            $heureDeb = 0;
+            $heureFin = 0;
+
+            $aujourdhui = date("Y-m-d");
+            if ($date < $aujourdhui) {            
+                $erreurCreneau = "Impossible de rajouter ou modifier un créneau dans une date déjà passée.";
+            }
+
+            // Récupération des horaires d'ouverture du jour
+            if ($erreurCreneau === "") {
+                $jourSemaine = date("N", strtotime($date));
+                $sqlOuverture = "
+                    SELECT horaireDeb, horaireFin 
+                    FROM ouverture 
+                    WHERE idSalle = $id_salle AND idj = $jourSemaine
+                ";
+                $resOuverture = mysqli_query($connexion, $sqlOuverture);
+                $ouvertureSalle = mysqli_fetch_assoc($resOuverture);
+                
+                if (!$ouvertureSalle) {
+                    $erreurCreneau = "Aucun horaire d'ouverture défini pour ce jour.";
+                } else {
+                    $heureOuv = (int)substr($ouvertureSalle["horaireDeb"], 0, 2);
+                    $heureFerm = (int)substr($ouvertureSalle["horaireFin"], 0, 2);
+
+                    if ($heureFerm === 0) {
+                        $heureFerm = 24;
+                    }
+                    
+                    if ($heureDebutCreneau < $heureOuv || ($heureDebutCreneau + 2) > $heureFerm) {
+                        $erreurCreneau = "Impossible de rajouter un créneau en dehors des heures d'ouverture.";
+                        }
+
+                    // Mettre à jour les heures (Formatage pour la base de donnée)
+                    $heureDeb = sprintf("%02d:00:00", $heureDebutCreneau);
+                    $heureFin = sprintf("%02d:00:00", $heureDebutCreneau + 2);
+                    
+                    // Chercher si un artiste a déjà ce nom
+                    $res = mysqli_query($connexion, "
+                        SELECT idArt 
+                        FROM artiste
+                        WHERE artiste.nom='$nomArtiste'
+                    ");
+
+                    if (mysqli_num_rows($res) > 0) {
+                        // Si l'artiste existe alors on prend l'idArt
+                        $row = mysqli_fetch_assoc($res);
+                        $idArt = (int)$row["idArt"];
+                    } else {
+                        // Sinon, on crée l'artiste et on prend le nouvel id
+                        mysqli_query($connexion, "
+                            INSERT INTO artiste (nom) 
+                            VALUES ('$nomArtiste')
+                        ");
+                        $idArt = mysqli_insert_id($connexion);
+                    }
+                }
+                if ($erreurCreneau !== "") {
+                    // Si il y a une erreur, elle sera affiché avec l'alerte php
+                } else {
+                    // Eviter le chevauchement de créneaux
+                    
+                    // On vérifie s'il existe déjà un créneau pour : 
+                            // la même salle, 
+                            // le même jour 
+                            // et qui chevauche les heures de début et fin du nouveau créneau
+                            // On exclut le créneau actuel pour ne pas le comparer à lui-même
+                    $sqlChevauchement = "
+                        SELECT *
+                        FROM creneaux
+                        WHERE idSalle = $id_salle
+                        AND date = '$date'
+                        AND (heureDeb < '$heureFin')
+                        AND (heureFin > '$heureDeb')
+                        AND idC != $idC
+                    ";
+                    $resChevauchement = mysqli_query($connexion, $sqlChevauchement);
+
+                    if (mysqli_num_rows($resChevauchement) > 0) {
+                        $erreurCreneau = "Impossible de choisir ce créneau car il chevauche un autre créneau déjà existant.";
+                    } else { 
+
+                        mysqli_query($connexion, "
+                            UPDATE creneaux
+                            SET idArt='$idArt', Date='$date', heureDeb='$heureDeb', heureFin='$heureFin'
+                            WHERE idC=$idC AND idSalle=$id_salle
+                        ");
+
+                        header("Location: Salle.php?lundi=" . urlencode($lundi));
+                        exit;
+                    }
                 }
             }
-        }
+        };
+
+        if ($action === "supprimer") {
+            $idC = (int)$_POST["idC"];
+
+            if ($idC > 0) {
+                mysqli_query($connexion, "
+                DELETE FROM creneaux WHERE idC=$idC AND idSalle=$id_salle
+                ");
+            }
+
+            header("Location: Salle.php?lundi=" . urlencode($lundi));
+            exit;
+        };
     };
 
-    if ($action === "edit") {
-        $idC = isset($_POST["idC"]) ? (int)$_POST["idC"] : 0;
-        $idArt = isset($_POST["idArt"]) ? (int)$_POST["idArt"] : 0;
-        $date = isset($_POST["date"]) ? $_POST["date"] : "";
-        $startHour = isset($_POST["startHour"]) ? (int)$_POST["startHour"] : -1;
+    // Chargement des créneaux de la semaine affichée
+    
+    // Récupération de tous les créneaux de la salle affichée pour la semaine affichée
+    $sqlCreneaux = "
+        SELECT c.idC, c.date, c.heureDeb, c.heureFin, c.idArt, a.nom
+        FROM creneaux c
+        JOIN artiste a ON a.idArt = c.idArt
+        WHERE c.date BETWEEN '$lundi' AND '$dimanche' AND c.idSalle = $id_salle
+        ORDER BY c.date, c.heureDeb
+    ";
+    $resCreneaux = mysqli_query($connexion, $sqlCreneaux);
 
-        if ($idC <= 0 || $idArt <= 0 || $date === "" || $startHour < 0) {
-            $errorMessage = "Champs invalides.";
-        } else {
-            $heureDeb = sprintf("%02d:00:00", $startHour);
-            $heureFin = sprintf("%02d:00:00", $startHour + 2);
-
-            // Vérifier chevauchement
-            $sqlCheck = "
-                SELECT * FROM creneaux
-                WHERE date = ?
-                AND idC <> ?
-                AND NOT (? <= heureDeb OR ? >= heureFin)
-            ";
-            $stmt = mysqli_prepare($conn, $sqlCheck);
-            mysqli_stmt_bind_param($stmt, "siss", $date, $idC, $heureDeb, $heureFin);
-            mysqli_stmt_execute($stmt);
-            $resCheck = mysqli_stmt_get_result($stmt);
-
-            if ($resCheck && mysqli_num_rows($resCheck) > 0) {
-                $errorMessage = "Chevauchement détecté.";
-            } else {
-                $sqlUpdate = "
-                    UPDATE creneaux
-                    SET heureDeb=?, heureFin=?, date=?, idArt=?
-                    WHERE idC=?
-                ";
-                $stmt2 = mysqli_prepare($conn, $sqlUpdate);
-                mysqli_stmt_bind_param($stmt2, "sssii", $heureDeb, $heureFin, $date, $idArt, $idC);
-                mysqli_stmt_execute($stmt2);
-
-                header("Location: Salle.php?monday=" . urlencode($monday) . "#tab-planning");
-                exit;
-            }
-        }
+    // Formatage des créneaux dans un tableau pour le javascript
+    $listeCreneaux = [];
+    while ($row = mysqli_fetch_assoc($resCreneaux)) {
+        $listeCreneaux[] = [
+            "idC"       => (int)$row["idC"],
+            "artist"    => (string)$row["nom"],
+            "date"      => $row["date"],
+            "heureDebutCreneau" => (int)substr($row["heureDeb"], 0, 2),
+            "idArt"     => (int)$row["idArt"]
+        ];
     }
-
-    if ($action === "delete") {
-        $idC = isset($_POST["idC"]) ? (int)$_POST["idC"] : 0;
-
-        if ($idC > 0) {
-            mysqli_query($conn, "DELETE FROM creneaux WHERE idC=$idC");
-        }
-
-        header("Location: Salle.php?monday=" . urlencode($monday) . "#tab-planning");
-        exit;
-    }
-
-}
-
-
-/* ----------------------
-   CHARGEMENT ARTISTES
------------------------ */
-
-$artists = [];
-$resArtists = mysqli_query($conn, "SELECT idArt, nom FROM artiste ORDER BY nom ASC");
-if ($resArtists === false) {
-    die("Erreur SQL artistes : " . mysqli_error($conn));
-}
-while ($row = mysqli_fetch_assoc($resArtists)) {
-    $artists[] = $row;
-}
-
-/* ----------------------
-   CHARGEMENT CRENEAUX
------------------------ */
-
-$sqlSlots = "
-    SELECT c.idC, c.date, c.heureDeb, c.heureFin, c.idArt, a.nom
-    FROM creneaux c
-    JOIN artiste a ON a.idArt = c.idArt
-    WHERE c.date BETWEEN '$monday' AND '$sunday'
-    ORDER BY c.date, c.heureDeb
-";
-$resSlots = mysqli_query($conn, $sqlSlots);
-if ($resSlots === false) {
-    die("Erreur SQL créneaux : " . mysqli_error($conn));
-}
-
-$slots = [];
-while ($row = mysqli_fetch_assoc($resSlots)) {
-    $slots[] = [
-        "idC"       => (int)$row["idC"],
-        "artist"    => $row["nom"],
-        "date"      => $row["date"],
-        "startHour" => (int)substr($row["heureDeb"], 0, 2),
-        "idArt"     => (int)$row["idArt"]
-    ];
-}
-
-/* ----------------------
-   SIMULATIONS EXISTANTES
------------------------ */
-
-// Simulation des salles du propriétaire
-$salles = [
-    ['id' => 1, 'nom' => 'Salle 1', 'adresse' => '--- rue -- --------------, Toulouse, 31---'],
-    ['id' => 2, 'nom' => 'Salle 2', 'adresse' => '--- avenue -- --------------, Toulouse, 31---'],
-];
-
-$salleId = isset($_GET['salle']) ? (int)$_GET['salle'] : $salles[0]['id'];
-$salleCourante = null;
-foreach ($salles as $salle) {
-    if ($salle['id'] === $salleId) {
-        $salleCourante = $salle;
-        break;
-    }
-}
-if (!$salleCourante) {
-    $salleCourante = $salles[0];
-}
-
-// --- Simulation de données capteurs ---
-$temperatureActuelle = 22;
-$temperatureMoyenneJour = 20;
-$portesOuverturesJour = 14;
-$porteEtat = "Fermée";
-$humidite = 45;
-$son = 32;
-
-// --- Simulation d’alertes ---
-$alertes = [
-    ['type' => 'Surchauffe', 'message' => 'Température supérieure à 28°C', 'niveau' => 'Élevé', 'date' => '2026-04-16 21:32'],
-    ['type' => 'Porte ouverte', 'message' => 'Porte principale ouverte après fermeture', 'niveau' => 'Moyen', 'date' => '2026-04-15 02:10'],
-];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -238,154 +330,47 @@ $alertes = [
 
 <main>
     <div class="conteneur">
-        <aside class="colonne-gauche">
-            <div class="menu">
-                <h1 class="onglet">Salles</h1>
-            </div>
-            <div class="sousmenu">
-                <?php foreach ($salles as $salle): ?>
-                    <a href="salle.php?salle=<?= $salle['id'] ?>"
-                       class="sous-onglet <?= $salle['id'] === $salleCourante['id'] ? 'active' : '' ?>">
-                        <?= htmlspecialchars($salle['nom']) ?>
-                    </a>
-                <?php endforeach; ?>
-                <a href="ajouter_salle.php" class="sous-onglet ajouter">+ Ajouter une salle</a>
-            </div>
-        </aside>
-
-        <section class="infos">
-            <div class="header-salle">
-                <div>
-                    <h1><?= htmlspecialchars($salleCourante['nom']) ?></h1>
-                    <p class="adresse"><?= htmlspecialchars($salleCourante['adresse']) ?></p>
-                    <p class="maj">Dernière mise à jour : il y a 5 min</p>
+            <div class="planning-header">
+                <h2>Planning</h2>
+                <div class="planning-nav">
+                    <a href="Salle.php?lundi=<?= urlencode($lundiAvant) ?>" class="boutton">« Semaine précédente</a>
+                    <span>
+                        Semaine du <?= date("d/m/Y", strtotime($lundi)) ?>
+                        au <?= date("d/m/Y", strtotime($dimanche)) ?>
+                    </span>
+                    <a href="Salle.php?lundi=<?= urlencode($lundiApres) ?>" class="boutton">Semaine suivante »</a>
                 </div>
-                <button class="edit-btn">Modifier la salle</button>
+                <button class="boutton" data-bs-toggle="modal" data-bs-target="#ajoutModal">Ajouter un créneau</button>
             </div>
 
-            <!-- Slider -->
-            <div class="slider">
-                <input type="radio" name="slider" id="s1" checked>
-                <input type="radio" name="slider" id="s2">
-                <input type="radio" name="slider" id="s3">
-                <input type="radio" name="slider" id="s4">
-                <input type="radio" name="slider" id="s5">
-
-                <div class="slides">
-                    <div class="slide" style="background-image:url('img/imgSalle-1.png');"></div>
-                    <div class="slide" style="background-image:url('img/imgSalle-2.png');"></div>
-                    <div class="slide" style="background-image:url('img/imgSalle-3.png');"></div>
-                    <div class="slide" style="background-image:url('img/imgSalle-4.png');"></div>
-                    <div class="slide" style="background-image:url('img/imgSalle-5.png');"></div>
+            <?php if (!empty($erreurCreneau)) : ?>
+                <div class="alert alert-danger">
+                    <?= htmlspecialchars($erreurCreneau) ?>
                 </div>
-
-                <div class="thumbnails">
-                    <label for="s1" style="background-image:url('img/imgSalle-1.png');"></label>
-                    <label for="s2" style="background-image:url('img/imgSalle-2.png');"></label>
-                    <label for="s3" style="background-image:url('img/imgSalle-3.png');"></label>
-                    <label for="s4" style="background-image:url('img/imgSalle-4.png');"></label>
-                    <label for="s5" style="background-image:url('img/imgSalle-5.png');"></label>
-                </div>
+            <?php endif; ?>
+            <div class="timetable-container mt-3">
+                <table id="timetable">
+                    <thead>
+                        <tr>
+                            <th class="time-col">Heure</th>
+                            <!-- Les jours seront ajoutés en JS -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Les lignes horaires & créneaux seront ajoutés en JS -->
+                    </tbody>
+                </table>
             </div>
-
-            <!-- Onglets -->
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="analyse">Analyse</button>
-                <button class="tab-btn" data-tab="planning">Planning</button>
-                <button class="tab-btn" data-tab="alertes">Alertes</button>
-            </div>
-
-            <!-- Analyse -->
-            <div class="tab-content active" id="tab-analyse">
-                <div class="cards">
-                    <div class="card">
-                        <h3>Température</h3>
-                        <p><strong>Actuelle :</strong> <?= $temperatureActuelle ?> °C</p>
-                        <p><strong>Moyenne du jour :</strong> <?= $temperatureMoyenneJour ?> °C</p>
-                        <div class="mini-graph">Graphique à venir</div>
-                    </div>
-
-                    <div class="card">
-                        <h3>Portes</h3>
-                        <p><strong>Ouvertures aujourd’hui :</strong> <?= $portesOuverturesJour ?></p>
-                        <p><strong>État actuel :</strong> <?= $porteEtat ?></p>
-                    </div>
-
-                    <div class="card">
-                        <h3>Autres capteurs</h3>
-                        <p><strong>Humidité :</strong> <?= $humidite ?> %</p>
-                        <p><strong>Niveau sonore :</strong> <?= $son ?> dB</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Planning -->
-            <div class="tab-content" id="tab-planning">
-                <div class="planning-header">
-                    <h2>Planning</h2>
-                    <div class="planning-nav">
-                        <a href="Salle.php?monday=<?= urlencode($prevMonday) ?>#tab-planning" class="boutton">« Semaine précédente</a>
-                        <span>
-                            Semaine du <?= date("d/m/Y", strtotime($monday)) ?>
-                            au <?= date("d/m/Y", strtotime($sunday)) ?>
-                        </span>
-                        <a href="Salle.php?monday=<?= urlencode($nextMonday) ?>#tab-planning" class="boutton">Semaine suivante »</a>
-                    </div>
-                    <button class="boutton" data-bs-toggle="modal" data-bs-target="#addModal">Ajouter un créneau</button>
-                </div>
-
-                <?php if ($errorMessage): ?>
-                    <div class="alert alert-danger mt-2"><?= htmlspecialchars($errorMessage) ?></div>
-                <?php endif; ?>
-
-                <div class="timetable-container mt-3">
-                    <table id="timetable">
-                        <thead>
-                            <tr>
-                                <th class="time-col">Heure</th>
-                                <!-- Les jours seront ajoutés en JS -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Les lignes horaires + créneaux seront ajoutés en JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Alertes -->
-            <div class="tab-content" id="tab-alertes">
-                <h2>Alertes</h2>
-                <?php if (empty($alertes)): ?>
-                    <p>Aucune alerte pour le moment.</p>
-                <?php else: ?>
-                    <ul class="liste-alertes">
-                        <?php foreach ($alertes as $a): ?>
-                            <li class="alerte alerte-<?= strtolower($a['niveau']) ?>">
-                                <div class="alerte-header">
-                                    <span class="type"><?= htmlspecialchars($a['type']) ?></span>
-                                    <span class="niveau"><?= htmlspecialchars($a['niveau']) ?></span>
-                                </div>
-                                <p><?= htmlspecialchars($a['message']) ?></p>
-                                <span class="date"><?= htmlspecialchars($a['date']) ?></span>
-                                <button class="btn-resolu">Marquer comme résolue</button>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php endif; ?>
-            </div>
-
-        </section>
     </div>
 </main>
 
-<!-- Modal ajout créneau -->
-<div class="modal fade" id="addModal" tabindex="-1">
+<!-- Modal/Pop-up pour ajouter un créneau -->
+<div class="modal fade" id="ajoutModal" tabindex="-1">
     <div class="modal-dialog">
         <form method="post" class="modal-content">
-            <input type="hidden" name="action" value="add">
-            <input type="hidden" name="date" id="addDate">
-            <input type="hidden" name="startHour" id="addStartHour">
+            <input type="hidden" name="action" value="ajouter">
+            <input type="hidden" name="date" id="ajoutDate">
+            <input type="hidden" name="heureDebutCreneau" id="ajoutheureDebutCreneau">
 
             <div class="modal-header">
                 <h5 class="modal-title">Ajouter un créneau</h5>
@@ -395,22 +380,21 @@ $alertes = [
             <div class="modal-body">
                 <div class="mb-2">
                     <label class="form-label">Artiste</label>
-                    <select name="idArt" class="form-select" required>
-                        <option value="">Choisir...</option>
-                        <?php foreach ($artists as $a): ?>
-                            <option value="<?= (int)$a["idArt"] ?>"><?= htmlspecialchars($a["nom"]) ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="text" name="nomArtiste" id="ajoutNomArt" class="form-control" required>
                 </div>
 
                 <div class="mb-2">
-                    <label class="form-label">Jour</label>
-                    <select id="addDay" class="form-select"></select>
+                    <label class="form-label">Date</label>
+                    <input type="date" name="date" id="ajoutDate" class="form-control" required>
                 </div>
 
                 <div class="mb-2">
                     <label class="form-label">Heure de début</label>
-                    <select id="addHour" class="form-select"></select>
+                    <select name="heureDebutCreneau" id="ajoutheureDebutCreneau" class="form-select" required>
+                        <?php for ($h = 0; $h <= 22; $h++): ?>
+                        <option value="<?= $h ?>"><?= sprintf("%02d", $h) ?>h</option>
+                        <?php endfor; ?>
+                    </select>
                     <div class="form-text">Chaque créneau dure 2h automatiquement.</div>
                 </div>
             </div>
@@ -423,11 +407,12 @@ $alertes = [
     </div>
 </div>
 
-<div class="modal fade" id="ModifModal" tabindex="-1">
+<!-- Modal/Pop-up pour modifier un créneau -->
+<div class="modal fade" id="modifModal" tabindex="-1">
   <div class="modal-dialog">
     <form method="post" class="modal-content">
-      <input type="hidden" name="action" value="edit">
-      <input type="hidden" name="idC" id="editIdC">
+      <input type="hidden" name="action" value="modifier">
+      <input type="hidden" name="idC" id="modifIdC">
 
       <div class="modal-header">
         <h5 class="modal-title">Modifier le créneau</h5>
@@ -435,30 +420,26 @@ $alertes = [
       </div>
 
       <div class="modal-body">
-        <div class="mb-2">
-          <label class="form-label">Artiste</label>
-          <select name="idArt" class="form-select" required>
-            <?php foreach ($artists as $a): ?>
-              <option value="<?= (int)$a["idArt"] ?>"><?= htmlspecialchars($a["nom"]) ?></option>
-            <?php endforeach; ?>
-          </select>
-          
-          <div class="mb-2">
-            <label class="form-label">Jour</label>
-            <select id="addDay" class="form-select">
-                <?php foreach ($creneaux as $c): ?>
-                    <option value="<?= (int)$c["idC"] ?>"><?= htmlspecialchars($c["date"]) ?></option>
-                <?php endforeach; ?>
-            </select>
-          </div>
+            <div class="mb-2">
+                <label class="form-label">Artiste</label>
+                <input type="text" name="nomArtiste" id="modifNomArt" class="form-control" required>
+            </div>
 
-          <div class="mb-2">
-            <label class="form-label">Heure de début</label>
-            <select id="addHour" class="form-select"></select>
-            <div class="form-text">Chaque créneau dure 2h automatiquement.</div>
-          </div>
+            <div class="mb-2">
+                <label class="form-label">Date</label>
+                <input type="date" name="date" id="modifDate" class="form-control" required>
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label">Heure de début</label>
+                <select name="heureDebutCreneau" id="modifHeure" class="form-select" required>
+                    <?php for ($h = 0; $h <= 22; $h++): ?>
+                    <option value="<?= $h ?>"><?= sprintf("%02d", $h) ?>h</option>
+                    <?php endfor; ?>
+                </select>
+                <div class="form-text">Chaque créneau dure 2h automatiquement.</div>
+            </div>
         </div>
-      </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
@@ -468,12 +449,12 @@ $alertes = [
   </div>
 </div>
 
-
-<div class="modal fade" id="SuppModal" tabindex="-1">
+<!-- Modal/Pop-up pour supprimer un créneau -->
+<div class="modal fade" id="suppModal" tabindex="-1">
   <div class="modal-dialog">
     <form method="post" class="modal-content">
-      <input type="hidden" name="action" value="delete">
-      <input type="hidden" name="idC" id="deleteIdC">
+      <input type="hidden" name="action" value="supprimer">
+      <input type="hidden" name="idC" id="suppIdC">
 
       <div class="modal-header">
         <h5 class="modal-title">Supprimer le créneau</h5>
@@ -499,13 +480,47 @@ $alertes = [
     </p>
 </footer>
 
-<!-- Variables PHP → JS -->
 <script>
-    window.PLANNING_SLOTS = <?= json_encode($slots) ?>;
-    window.PLANNING_MONDAY = "<?= $monday ?>";
+    // Tableaux des heures d'ouverture et fermeture de la salle
+    var ouvertureSalleparJourDebut = [];
+    var ouvertureSalleparJourFin = [];
+
+    <?php
+    // On récupère les horaires d'ouverture de la salle
+    // pour chacun des 7 jours (idj = 1 à 7)
+    $resultatHorairesJours = mysqli_query($connexion, "
+            SELECT idj, horaireDeb, horaireFin 
+            FROM ouverture 
+            WHERE idSalle=$id_salle
+            ");
+
+    // Pour chaque jour, on génère du javascript qui remplit les tableaux.
+    while ($horaires = mysqli_fetch_assoc($resultatHorairesJours)) { 
+        $jours = $horaires["idj"]; 
+
+        // Convertit les heures d'ouverture et de fermeture en nombre entier
+        $heureOuverture = (int)substr($horaires["horaireDeb"], 0, 2);
+        $heureFermeture = (int)substr($horaires["horaireFin"], 0, 2);
+        if ($heureFermeture === 0) {
+            $heureFermeture = 24;
+        }
+
+        // On écrit du javascript pour remplir les tableaux ouvertureDeb et ouvertureFin
+        echo "ouvertureSalleparJourDebut[$jours] = $heureOuverture;";
+        echo "ouvertureSalleparJourFin[$jours] = $heureFermeture;";
+    }
+    ?>
 </script>
 
-<!-- JS -->
+<!-- Variables globales contenant : 
+    - les créneaux de la semaine affichée (tableau PLANNING_SLOTS)
+    - la date du lundi de la semaine affichée (PLANNING_MONDAY)
+-->
+<script>
+    window.PLANNING_SLOTS = <?= json_encode($listeCreneaux) ?>;
+    window.PLANNING_MONDAY = "<?= $lundi ?>";
+</script>
+
 <script src="java/salle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
