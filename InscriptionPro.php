@@ -29,6 +29,7 @@
                 die("SQL Error: " . mysqli_error($connexion));
             }
             $_SESSION['idPro'] = mysqli_insert_id($connexion); // Store the new ID in session for later use
+            header('Location: InscriptionSalle.php');
     }
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         validerInscription($connexion);
