@@ -41,24 +41,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WaveTrack - Inscription</title>
-    <link rel="stylesheet" href="css/Inscription.css">
-    <link rel="stylesheet" href="css/InscriptionZoneProduit.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/Inscription.css">
 </head>
 <body>
 
     <nav class="navbar">
         <div class="logo">
-            <img src="img/rasp.png" alt="Logo" class="logo-img">
+            <img src="img/1000038818.png" alt="Logo" class="logo-img">
             <span class="nomSite">WaveTrack</span>
         </div>
         
         <ul class="nav-links">
             <li><a href="#">Accueil</a></li>
-            <li><a href="#">Produits</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a href="#">À propos</a></li>
+            
             <li><img src="img/user.png" alt="Profile" class="user-img"></li>
         </ul>
     </nav>
@@ -93,7 +90,7 @@
                         <input type="password" class="form-control" id="mdpPro" name="mdpPro" required>
                     </div>
 
-                    <button type="submit" onclick="location.href='InscriptionSalle.php'" class="btn btn-primary">Continuer</button>
+                    <button type="submit" class="btn btn-primary">Continuer</button>
                 </form>
             </div>
         </div>
@@ -102,5 +99,7 @@
         <p>Kozlov-mercier Nina - Issa Lina - Akbaba Julia - Doumergue Louise - Girard Alexia - 
                 <a href="Contactavant.html" class="contactfooter">Nos Contacts</a></p>
     </footer>
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+     <script src="java/Inscription.js"></script>
 </body>
 </html>
