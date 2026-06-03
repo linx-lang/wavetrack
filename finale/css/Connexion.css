@@ -1,0 +1,69 @@
+/* ======== GLOBAL ======== */
+
+body {
+    background-color: rgb(227, 227, 248);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ======== TITRE ======== */
+
+header h2 {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 32px;
+    color: rgba(37, 37, 87);
+    font-weight: bold;
+}
+
+/* ======== FORMULAIRE ======== */
+
+.cadre {
+    width: 380px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid #d0d0e0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.cadre form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.cadre input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    background-color: #f9f9ff;
+}
+
+/* ======== BOUTON ======== */
+
+.boutton {
+    background-color: rgba(37, 37, 87);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 999px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.boutton:hover {
+    background-color: rgb(60, 60, 120);
+    transform: translateY(-2px);
+}
+
+.boutton:active {
+    transform: translateY(0);
+}

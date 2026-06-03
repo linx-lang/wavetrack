@@ -1,0 +1,96 @@
+/* ======== GLOBAL ======== */
+
+body {
+    background-color: rgb(227, 227, 248);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ======== CONTENEUR PRINCIPAL ======== */
+
+.conteneur {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+/* ======== FORMULAIRE ======== */
+
+.formulaire-profil {
+    background: white;
+    width: 450px;
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid #d0d0e0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.formulaire-profil h1 {
+    text-align: center;
+    color: rgba(37, 37, 87);
+    margin-bottom: 25px;
+    font-size: 26px;
+}
+
+/* ======== LABELS ======== */
+
+.formulaire-profil label {
+    font-weight: bold;
+    color: rgba(37, 37, 87);
+    margin-top: 10px;
+    display: block;
+}
+
+/* ======== INPUTS ======== */
+
+.formulaire-profil input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    margin-top: 6px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    background-color: #f9f9ff;
+}
+
+/* ======== BOUTON ======== */
+
+.btn-valider {
+    width: 100%;
+    background-color: rgba(37, 37, 87);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-valider:hover {
+    background-color: rgb(60, 60, 120);
+    transform: translateY(-2px);
+}
+
+.btn-valider:active {
+    transform: translateY(0);
+}
+
+/* ======== FOOTER (si tu veux l’ajouter) ======== */
+
+footer {
+    margin-top: auto;
+    width: 100%;
+    background-color: rgba(37, 37, 87);
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.contactfooter {
+    color: white;
+    text-decoration: underline;
+}
