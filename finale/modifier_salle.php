@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <nav class="navbar">
     <div class="logo">
-        <img src="img/1000038818.png" alt="Logo" class="logo-img">
+        <img src="img/logo.png" alt="Logo" class="logo-img">
         <span class="nomSite">WaveTrack</span>
     </div>
 </nav>
