@@ -38,6 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Ajouter une salle</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/salle.css">
     <link rel="stylesheet" href="css/header.css">
 </head>
@@ -45,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <nav class="navbar">
     <div class="logo">
-        <img src="img/1000038818.png" alt="Logo" class="logo-img">
+        <img src="img/logo.png" alt="Logo" class="logo-img">
         <span class="nomSite">WaveTrack</span>
     </div>
 </nav>
