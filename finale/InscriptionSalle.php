@@ -70,21 +70,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/Inscription.css">
-    <link rel="stylesheet" href="css/InscriptionZoneProduit.css">
     <link rel="stylesheet" href="css/header.css">
 </head>
 <body>
     <nav class="navbar bg-dark text-white p-3 mb-4">
         <div class="logo">
-            <img src="img/rasp.png" alt="Logo" class="logo-img">
+            <img src="img/logo.png" alt="Logo" class="logo-img">
             <span class="nomSite">WaveTrack</span>
         </div>
         
         <ul class="nav-links">
-            <li><a href="#">Accueil</a></li>
-            <li><a href="#">Produits</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a href="#">À propos</a></li>
+            <li><a href="Accueil.html">Accueil</a></li>
             <li><img src="img/user.png" alt="Profile" class="user-img"></li>
         </ul>
     </nav>
