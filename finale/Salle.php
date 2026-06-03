@@ -711,7 +711,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interface Salle</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/salle.css">
     
@@ -722,14 +721,11 @@
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="logo">
-            <img src="img/rasp.png" alt="Logo" class="logo-img">
+            <img src="img/logo.png" alt="Logo" class="logo-img">
             <span class="nomSite">WaveTrack</span>
         </div>
         <ul class="nav-links">
             <li><a href="Accueil.html">Accueil</a></li>
-            <li><a href="#">Produits</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a href="#">À propos</a></li>
             <li><img src="img/user.png" alt="Profile" class="user-img"></li>
         </ul>
     </nav>
@@ -1149,7 +1145,6 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Passer des données PHP au JavaScript pour la gestion des créneaux et des alertes
