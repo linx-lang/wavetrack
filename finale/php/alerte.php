@@ -22,7 +22,6 @@ while ($row = mysqli_fetch_assoc($result)) {
     $values[] = intval($row["total"]);
 }
 
-// Retour JSON simple
 echo json_encode(array(
     "labels" => $labels,
     "values" => $values
