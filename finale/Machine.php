@@ -194,7 +194,7 @@ $clim = recupererClimatiseur($connexion, $idSalle);
     <meta charset="UTF-8">
     <title>WaveTrack - Machines</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/inscriptionZoneProduit.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/header.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -202,12 +202,12 @@ $clim = recupererClimatiseur($connexion, $idSalle);
 <body>
     <nav class="navbar">
         <div class="logo">
-            <img src="img/rasp.png" alt="Logo" class="logo-img">
+            <img src="img/logo.png" alt="Logo" class="logo-img">
             <span class="nomSite">WaveTrack</span>
         </div>
         <ul class="nav-links">
-            <li><a href="#">Accueil</a></li>
-            <li><img src="img/user.png" alt="Profile" class="user-img"></li>
+            <li><a href="Accueil.html">Accueil</a></li>
+            <li><img src="img/user.png" href="profil.php" alt="Profile" class="user-img"></li>
         </ul>
     </nav>
 
@@ -215,7 +215,6 @@ $clim = recupererClimatiseur($connexion, $idSalle);
 
     <h3>Machines</h3>
 
-    <!-- ======= Sélecteur de zone ======= -->
     <form method="POST" id="formZone">
         <label class="form-label">Choisir la zone :</label>
         <select name="idZone" id="idZone" class="form-select mb-3" style="max-width: 300px;" onchange="document.getElementById('formZone').submit()">
@@ -230,7 +229,6 @@ $clim = recupererClimatiseur($connexion, $idSalle);
 
     <div class="container">
 
-        <!-- ======= Bloc climatiseur (visible seulement sur "Toutes les zones") ======= -->
         <?php if ($_POST['idZone'] == 0): ?>
             <div class="card mb-4" style="max-width: 400px; border: 1px solid #dee2e6; border-radius: 8px; padding: 20px;">
                 <p class="mb-3"><strong>Climatiseur de la salle</strong></p>
@@ -319,7 +317,7 @@ $clim = recupererClimatiseur($connexion, $idSalle);
 
                 <div class="mb-3">
                     <label class="form-label">Nom de la machine</label>
-                    <input type="text" name="nomMachine" class="form-control" placeholder="Ex : Clim Salle 1" required>
+                    <input type="text" name="nomMachine" class="form-control" placeholder="Ex : Piano, Frigo, etc." required>
                 </div>
 
                 <div class="mb-3">
@@ -380,11 +378,12 @@ $clim = recupererClimatiseur($connexion, $idSalle);
     </div>
 
     <div style="text-align: right; margin-top: 20px;">
-        <a href="salle.php" class="btn btn-secondary">Continuer</a>
+        <a href="Salle.php" class="btn btn-secondary">Continuer</a>
     </div>
 
 </div>
 
 <script src="java/machine.js"></script>
+<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
