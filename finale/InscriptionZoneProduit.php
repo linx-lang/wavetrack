@@ -109,7 +109,7 @@
         if (!mysqli_query($connexion, $q8)) die("Erreur acheter prises : " . mysqli_error($connexion));
     }
  
-    header('Location: Abonnementtest.php');
+    header('Location: Abonnement.php');
  }
  
  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
