@@ -183,7 +183,9 @@
         <hr class="my-4">
  
         <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-secondary" href="InscriptionSalle.html">Ajouter une autre salle</button>
+            
+            <a href="InscriptionSalle.php" class="btn btn-secondary">Ajouter une autre salle</a>
+
             <button type="submit" class="btn btn-secondary">Valider</button>
         </div>
     </form>
