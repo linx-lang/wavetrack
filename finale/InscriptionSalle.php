@@ -27,23 +27,23 @@
             if (mysqli_error($connexion)) {
                 die("SQL Error: " . mysqli_error($connexion));
             }
-            $idSalle= mysqli_insert_id($connexion);
+            $idSalle= mysqli_insert_id($connexion);// php garde la cle primaire de la derniere insert de la bdd
             $_SESSION['idSalle'] = $idSalle; 
 
-            $joursSelectionnes = isset($_POST['jour']) ? $_POST['jour'] : [];// Récupère les jours sélectionnés ou un tableau vide
-            $horairesDebut = isset($_POST['horaireD']) ? $_POST['horaireD'] : [];
+            $joursSelectionnes = isset($_POST['jour']) ? $_POST['jour'] : [];// isset ? = Récupère les jours sélectionnés ou un tableau vide
+            $horairesDebut = isset($_POST['horaireD']) ? $_POST['horaireD'] : [];// isset c'est soit on prend un val soit post[nana] est vide 
             $horairesFin  = isset($_POST['horaireF']) ? $_POST['horaireF'] : [];
-
+        
             foreach ($joursSelectionnes as $jour) {
                 if (empty($jour)) continue;// Ignore les jours vides
                 $idJour = (int)$jour; // Convertit en entier pour la base de données
 
                 $debs = $horairesDebut[$jour]? $horairesDebut[$jour] : [];// Récupère les horaires de début pour ce jour ou un tableau vide
                 $fins = $horairesFin[$jour]? $horairesFin[$jour] : [];// Récupère les horaires de fin pour ce jour ou un tableau vide
-
+                
                 for ($i = 0; $i < count($debs); $i++) {
-                    $deb = $debs[$i] ? $debs[$i] : '';
-                    $fin = $fins[$i] ? $fins[$i] : '';
+                    $deb = $debs[$i] ? $debs[$i] : ''; // Récupartion de l'Horaire début selon la position i ou vide
+                    $fin = $fins[$i] ? $fins[$i] : ''; // Récupartion de l'Horaire fin selon la position i ou vide
                     if (empty($deb) || empty($fin)) continue;
 
                     $query20= "INSERT INTO ouverture (idSalle, idJ, horaireDeb, horaireFin) VALUES ('$idSalle', '$idJour', '$deb', '$fin')";
@@ -67,7 +67,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WaveTrack- Inscription</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/Inscription.css">
     <link rel="stylesheet" href="css/InscriptionZoneProduit.css">
