@@ -15,8 +15,8 @@ const productsContainer = document.getElementById("products-container");
 const summaryContainer = document.getElementById("summary-container");
  
 /* --- PANIER GLOBAL --- */
-let cart = {};
-zones.forEach(z => cart[z] = {});
+let cart = {};// variable du panier
+zones.forEach(z => cart[z] = {});//liste  vide pour chaque zone
  
 /* --- ÉTAT PORTE PAR ZONE --- */
 let zoneAPorte = {};
