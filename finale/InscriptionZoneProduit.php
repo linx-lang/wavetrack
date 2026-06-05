@@ -41,22 +41,23 @@
  function getZones($connexion, $idDev) {
     $idSalle     = $_SESSION['idSalle'];
     $selections  = isset($_POST['selections']) ? $_POST['selections'] : [];
-    $zone        = array_keys($selections);
+    $zone        = array_keys($selections); 
  
     $compteur_bouton      = 0;
     $compteur_multisensor = 0;
     $compteur_porte       = 0;
     $compteur_prises      = 0;
- 
+    
     foreach ($zone as $z) {
         if (empty($z)) continue;
- 
+        //compteur pour mettre le nbr de bouton que la personne veux acheter et aprés le met dans la table devis
         // 1. Insérer la zone
         $query1    = "INSERT INTO zone (nomZone, idSalle) VALUES ('$z', '$idSalle')";
         $resultat1 = mysqli_query($connexion, $query1);
         if (!$resultat1) {
             die("Erreur lors de l'insertion de la zone : " . mysqli_error($connexion));
         }
+      // recuperation de la cle primaire de la table zone dans la bdd
         $idZone = mysqli_insert_id($connexion);
  
         // 2. Sauvegarder l'info porte pour cette zone (maintenant qu'on a $idZone)
